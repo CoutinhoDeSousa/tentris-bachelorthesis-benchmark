@@ -1,0 +1,9 @@
+tentris_versions:
+  - 1.0.5.1
+  - 1.0.5.1_pcds
+
+tentris_before:
+  - 1.0.5.1
+
+tentris_after:
+  - 1.0.5.1_pcds

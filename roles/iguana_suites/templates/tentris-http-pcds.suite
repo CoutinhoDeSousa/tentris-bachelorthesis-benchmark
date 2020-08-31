@@ -1,0 +1,29 @@
+connection0.name = tentris-{{ item[0] }}-{{item[3]}}-{{item[4]}}
+connection0.service = http://localhost:9080/sparql?sort={{ item[3] }}&weight={{ item[4] }}
+connection0.update.service = http://localhost:9080/sparql
+connection0.user = 
+connection0.password = 
+iguana.cc.connections = connection0
+
+dataset0.name = {{ item[1].name }}
+iguana.cc.datasets = dataset0
+
+sparql{{ item[2].number }}.numberOfWorkers: {{ item[2].number }}
+sparql{{ item[2].number }}.workerClass: org.aksw.iguana.tp.tasks.impl.stresstest.worker.impl.SPARQLWorker
+sparql{{ item[2].number }}.timeout: {{ iguana_query_timeout }}
+sparql{{ item[2].number }}.queryFile: {{ item[1].queries_path }}
+sparql{{ item[2].number }}.fixedLatency: 0
+sparql{{ item[2].number }}.gaussianLatency: 0
+
+
+task0.class = org.aksw.iguana.tp.tasks.impl.stresstest.Stresstest
+task0x.timeLimit = {{ iguana_time_limit }}
+task0x.queryHandler = org.aksw.iguana.tp.query.impl.InstancesQueryHandler
+task0x.workers = sparql{{ item[2].number }}
+task0.constructorArgs = task0x.timeLimit,task0x.queryHandler,task0x.workers
+
+iguana.cc.tasks = task0
+
+# temporarily disabled due to broken pipes in Java process execution
+# script.hook.pre={{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}-start.sh
+# script.hook.post={{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/stop.sh

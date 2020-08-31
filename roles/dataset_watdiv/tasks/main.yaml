@@ -1,0 +1,20 @@
+- name: Create the WatDiv directory
+  file:
+    path: "{{ target_dir }}/datasets/watdiv"
+    state: directory
+
+- name: Check for the WatDiv Generator
+  stat:
+    path: "{{ target_dir }}/datasets/watdiv/generator/bin/Release/watdiv"
+  register: generator
+
+- include: install-generator.yaml
+  when: not generator.stat.exists
+
+- include: run-generator.yaml
+
+- name: Download the query file
+  get_url:
+    url: https://raw.githubusercontent.com/dice-group/iswc2020_tentris/master/queries/WatDiv-Queries.txt
+    checksum: sha1:ebeb589d32761ae0def51e290f52f730daa00e5d
+    dest: "{{ target_dir }}/datasets/watdiv/queries.txt"

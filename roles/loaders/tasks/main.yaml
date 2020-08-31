@@ -1,0 +1,16 @@
+- name: Install curl (to talk to http endpoints)
+  become: yes
+  apt:
+    package: curl
+
+- name: Create loader directory
+  file:
+    path: "{{ target_dir }}/loaders"
+    state: directory
+
+- name: Template copy tentris loader scripts
+  template:
+    src: "tentris-load.sh"
+    dest: "{{ target_dir }}/loaders/tentris-{{ item[0] }}-load-{{ item[1].name }}.sh"
+    mode: 0755
+  loop: "{{ tentris_versions | product(datasets) | list }}"

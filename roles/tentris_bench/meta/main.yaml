@@ -1,0 +1,8 @@
+dependencies:
+  - role: dataset_dbpedia2015
+  - role: dataset_swdf
+  - role: dataset_watdiv
+  - role: tentris
+  - role: loaders
+  - role: iguana
+  - role: iguana_suites

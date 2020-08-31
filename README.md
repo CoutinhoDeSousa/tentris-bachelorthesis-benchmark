@@ -1,1 +1,1 @@
-# tentris-bachelorthesis-benchmark
+# tentris-paper-benchmarks

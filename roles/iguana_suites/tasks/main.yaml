@@ -1,0 +1,82 @@
+- name: Create Iguana suite directory
+  file:
+    path: "{{ target_dir }}/iguana_suites/"
+    state: directory
+
+#- name: Create HTTP suite directories
+#  file:
+#    path: "{{ target_dir }}/iguana_suites/http/{{ item[0].name }}/{{ item[1].name }}"
+#    state: directory
+#  loop: "{{ triplestores_http | product(datasets) | list }}"
+
+- name: Create HTTP suite directories for tentris
+  file:
+    path: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}"
+    state: directory
+  loop: "{{ tentris_versions | product(datasets) | list }}"
+
+- name: Create HTTP suite directories for tentris 2
+  file:
+    path: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}"
+    state: directory
+  loop: "{{ tentris_versions | product(datasets, iguana_http_connections) | list }}"
+
+- name: Create HTTP suite directories for tentris 3
+  file:
+    path: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}/{{ item[3] }}"
+    state: directory
+  loop: "{{ tentris_versions | product(datasets, iguana_http_connections, sort) | list }}"
+
+- name: Template copy tentris start scripts
+  template:
+    src: tentris-start.sh
+    dest: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}-start.sh"
+    mode: 0755
+  loop: "{{ tentris_versions | product(datasets, iguana_http_connections) | list }}"
+
+##anpassen
+#- name: Template copy tentris start scripts new
+#  template:
+#    src: tentris-start.sh
+#    dest: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}/{{ item[3]}}/{{item[4]}}-start.sh"
+#    mode: 0755
+#  loop: "{{ tentris_after | product(datasets, iguana_http_connections, sort, weight) | list }}"
+
+
+- name: Template copy tentris stop scripts
+  template:
+    src: tentris-stop.sh
+    dest: "{{ target_dir }}/iguana_suites/http/tentris-{{ item }}/stop.sh"
+    mode: 0755
+  loop: "{{ tentris_versions }}"
+
+- name: Template copy Tentris Iguana HTTP suites # vorher
+  template:
+    src: tentris-http.suite
+    dest: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}.suite"
+  loop: "{{ tentris_before | product(datasets, iguana_http_connections) | list }}"
+
+- name: Template copy Tentris Iguana HTTP suites 2 # nachher
+  template:
+    src: tentris-http-pcds.suite
+    dest: "{{ target_dir }}/iguana_suites/http/tentris-{{ item[0] }}/{{ item[1].name }}/{{ item[2].number }}/{{ item[3]}}/{{item[4]}}.suite"
+  loop: "{{ tentris_after | product(datasets, iguana_http_connections, sort, weight) | list }}"
+
+#- name: Create CLI suite directories
+#  file:
+#    path: "{{ target_dir }}/iguana_suites/cli/{{ item.name }}"
+#    state: directory
+#  loop: "{{ triplestores_cli }}"
+#
+#- name: Create CLI suite directories for tentris
+#  file:
+#    path: "{{ target_dir }}/iguana_suites/cli/tentris-{{ item }}"
+#    state: directory
+#  loop: "{{ tentris_versions }}"
+#
+#
+#- name: Template copy Tentris Iguana CLI suites
+#  template:
+#    src: tentris-cli.yaml
+#    dest: "{{ target_dir }}/iguana_suites/cli/tentris-{{ item[0] }}/{{ item[1].name }}.yaml"
+#  loop: "{{ tentris_versions | product(datasets) | list }}"

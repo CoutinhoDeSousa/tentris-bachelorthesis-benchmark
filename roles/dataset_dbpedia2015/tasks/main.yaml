@@ -1,0 +1,19 @@
+- name: Check for the DBpedia2015 dataset
+  stat:
+    path: "{{ target_dir }}/datasets/dbpedia2015/dbpedia_2015-10_en_wo-comments_c.nt"
+    get_checksum: no
+  register: dataset2015_nt
+
+- name: Create dataset directory
+  file:
+    path: "{{ target_dir }}/datasets/dbpedia2015"
+    state: directory
+
+- include: download.yaml
+  when: not dataset2015_nt.stat.exists
+
+- name: Download DBpedia queries
+  get_url:
+    url: https://raw.githubusercontent.com/dice-group/iswc2020_tentris/master/queries/DBpedia-Queries.txt
+    checksum: sha1:6c2730a0a4f6dfae6bdc278ffe7a3864ef736300
+    dest: "{{ target_dir }}/datasets/dbpedia2015/queries.txt"

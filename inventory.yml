@@ -1,0 +1,5 @@
+all:
+  hosts:
+    raki:
+      ansible_host: geiser.aksw.uni-leipzig.de
+      ansible_user: PhilipCoutinhoDeSousa
